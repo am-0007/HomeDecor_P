@@ -1,0 +1,39 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/minorproject
+    username: postgres
+    password: 8956
+  jpa:
+    hibernate:
+      ddl-auto: update
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
+  mail:
+    host: localhost
+    port: 1025
+    username: okay
+    password: okay
+
+    properties:
+      mail:
+        smtp:
+        ssl:
+          trust: "*"
+        auth: true
+        starttls:
+          enable: true
+        connectiontimeout: 500
+        timeout: 3000
+        writetimeout: 5000
+
+  Security:
+    jwt:
+      token:
+        secret-key: secretKey
+        expire-length: 99999999
