@@ -5,9 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.apache.commons.io.FileUtils;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -44,13 +47,15 @@ public class Image {
         this.user = user;
     }
 
-    public void saveFile(String uploadDirectory, String fileName, MultipartFile multipartFile) throws IOException {
-        Path uploadPath = Paths.get(uploadDirectory);
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
+    public void saveFile(String uploadDirectory,
+                         String fileName,
+                         MultipartFile multipartFile) throws IOException {
+        Path updatedPath = Paths.get(uploadDirectory);
+        if (!Files.exists(updatedPath)) {
+            Files.createDirectories(updatedPath);
         }
         try (InputStream inputStream = multipartFile.getInputStream()) {
-            Path filePath = uploadPath.resolve(fileName);
+            Path filePath = updatedPath.resolve(fileName);
             Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException ioe) {
             throw new IOException("Could not save image file: " + fileName, ioe);
@@ -62,5 +67,36 @@ public class Image {
             return null;
         }
         return "/image/" + user.getId() + "/" + "product/" + name;
+    }
+
+    public void updateFile(String updateDirectory,
+                           String fileName,
+                           MultipartFile multipartFile,
+                           String formerImageName)throws IOException{
+
+        Path updatedPath = Paths.get(updateDirectory);
+        try {
+            File deleteFile = new File(updatedPath + "/" + formerImageName);
+            System.out.println(formerImageName);
+            deleteFile.delete();
+            if (deleteFile.exists()) {
+                throw new IOException("Failed to delete Image");
+            } else {
+                saveFile(updateDirectory, fileName, multipartFile);
+            }
+
+        } catch (IOException e) {
+            throw new IOException("Failed to update image");
+        }
+    }
+
+    public void deleteImage(Image image, String updateDirectory) throws IOException {
+        System.out.println("Nameeeeeeeeeeee: " + image.getName());
+
+        File deleteFile = new File(updateDirectory + "/" + image.getName());
+        deleteFile.delete();
+        if (deleteFile.exists()) {
+            throw new IOException("Failed to delete Image");
+        }
     }
 }

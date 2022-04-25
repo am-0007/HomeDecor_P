@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -20,6 +21,7 @@ import static HomeDecor.user.UserRole.*;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final PasswordEncoder passwordEncoder;
@@ -54,7 +56,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                                 "/api/v1/auth/login",
                                 "/api/v1/auth/adminLogin",
                                 "/api/v1/auth/userinfo",
-                                "/api/v1/login/**", "/api/v*/confirm/**").permitAll()
+                                "/api/v1/login/**", "/api/v*/confirm/**",
+                                "/api/product/getProduct",
+                                "/api/product/getProductByName/**",
+                                "/api/product/getProductById/**").permitAll()
                         .anyRequest()
                         .authenticated()
                 )

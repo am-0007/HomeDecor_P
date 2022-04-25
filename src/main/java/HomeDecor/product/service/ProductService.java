@@ -5,6 +5,7 @@ import HomeDecor.product.ProductRepository;
 import HomeDecor.product.dto.ProductDTO;
 import HomeDecor.product.dto.ProductResponse;
 import HomeDecor.product.image.Image;
+import HomeDecor.product.image.ImageRepository;
 import HomeDecor.product.image.service.ImageService;
 import HomeDecor.user.User;
 import HomeDecor.user.UserInterface;
@@ -24,10 +25,8 @@ import java.util.Optional;
 @AllArgsConstructor
 public class ProductService {
 
-    private final UserService userService;
     private final ImageService imageService;
     private final ProductRepository productRepository;
-
 
     @Autowired
     private final UserInterface userInterface;
@@ -37,7 +36,8 @@ public class ProductService {
 
 
     @SneakyThrows
-    public String addProduct(MultipartFile multipartFile, @RequestBody ProductDTO productDTO) {
+    public String addProduct(MultipartFile multipartFile,
+                             @RequestBody ProductDTO productDTO) {
         Optional<User> user = userInterface.findById(productDTO.getUserId());
         if (user.isEmpty()) {
             return "User Don't Exists!";
@@ -52,7 +52,7 @@ public class ProductService {
                 throw new IllegalStateException("You have product with same name, please update the the existing product details!");
             }
         }
-        Product product = new Product (
+        Product product = new Product(
                 productDTO.getProductName(),
                 productDTO.getProductDescription(),
                 productDTO.getProductCategory(),
@@ -61,7 +61,44 @@ public class ProductService {
                 image
         );
         productRepository.save(product);
-        return product.getProductName() + "Successfully Added";
+        return product.getProductName() + " Successfully Added";
+
+    }
+
+    @SneakyThrows
+    public String updateProductDetail(MultipartFile multipartFile,
+                                      ProductDTO productDTO,
+                                      Integer productId) {
+        Optional<User> user = userInterface.findById(productDTO.getUserId());
+        if (user.isEmpty()) {
+            return "User Don't Exists!";
+        }
+
+        User getUser = user.get();
+        Product productExist = productRepository.findById(productId)
+                .orElseThrow(
+                        () -> new IllegalStateException("Sorry, Not Avail!")
+                );
+        if (productDTO.getUserId().equals(productExist.getUser().getId())) {
+
+            Integer imageId = productExist.getImage().getImgId();
+            String formerImageName = productExist.getImage().getName();
+            Image image = imageService.updateImage(multipartFile, getUser, imageId, formerImageName);
+
+            productExist.setId(productId);
+            productExist.setProductName(productDTO.getProductName());
+            productExist.setProductDescription(productDTO.getProductDescription());
+            productExist.setProductCategory(productDTO.getProductCategory());
+            productExist.setPrice(productDTO.getPrice());
+            productExist.setUser(getUser);
+            productExist.setImage(image);
+
+            productRepository.save(productExist);
+            return "product Id: " + productExist.getId() + " Successfully Updated";
+        } else {
+            return "Unavailable to Update Product";
+        }
+
     }
 
     public List<ProductResponse> getProduct() {
@@ -98,27 +135,15 @@ public class ProductService {
         return productResponse;
     }
 
-    public Product updateProductDetail(Product product, String productName) {
-        Product productExist = productRepository.findByProductName(productName).orElseThrow(
-                () -> new IllegalStateException("Sorry, Not Avail!")
-        );
-
-        productExist.setProductName(product.getProductName());
-        productExist.setProductCategory(product.getProductCategory());
-        productExist.setProductDescription(product.getProductDescription());
-        productExist.setPrice(product.getPrice());
-        productExist.setImage(product.getImage());
-        productRepository.save(productExist);
-
-        return productExist;
-    }
-
-    public String deleteProduct(String productName) {
-        Product deleteProduct = productRepository.findByProductName(productName).orElseThrow(
+    public String deleteProduct(Integer productId) {
+        Product deleteProduct = productRepository.findById(productId).orElseThrow(
                 () -> new IllegalStateException("The product you searched for doesn't exists")
         );
+        System.out.println(deleteProduct.getProductName());
+        System.out.println("User ID: " + deleteProduct.getImage().getUser().getId());
         productRepository.delete(deleteProduct);
-        return productName + " Successfully Deleted!!";
+        imageService.deleteImage(deleteProduct.getImage());
+        return "product Id: " + productId + " Successfully Deleted!!";
     }
 
     public ProductResponse findByProductId(Integer productId) {
