@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import static HomeDecor.user.UserPermission.*;
 public enum UserRole {
-    USER(Sets.newHashSet(USER_SAVECART, USER_GETPRODUCT, USER_RATEPRODUCT)),
+    USER(Sets.newHashSet(USER_SAVECART, USER_GETPRODUCT, USER_RATEPRODUCT, USER_READCART)),
     ADMIN(Sets.newHashSet(ADMIN_ADDPRODUCT, ADMIN_EDITPRODUCT, ADMIN_REMOVEPRODUCT));
 
     private final Set<UserPermission> permissions;

@@ -14,7 +14,6 @@ import java.util.Date;
 public class CartDTO {
 
     private Integer productId;
-    private Long userId;
     private Integer quantity;
     private Double price;
     private Date addedDate;

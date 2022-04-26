@@ -21,35 +21,42 @@ import java.util.Optional;
 @AllArgsConstructor
 public class CartService {
 
-    @Autowired
     private final CartRepository cartRepository;
-
-    @Autowired
     private final ProductRepository productRepository;
-
-    @Autowired
     private final UserInterface userInterface;
 
-
-    public Object createCart(CartDTO cartDTO) {
-        Optional<Product> getProductById = productRepository.findById(cartDTO.getProductId());
-        Optional<User> getUserById = userInterface.findById(cartDTO.getUserId());
+    public Object saveCart(List<CartDTO> cartDTO, Long userId) {
+        Optional<User> getUserById = userInterface.findById(userId);
         if (getUserById.isPresent()) {
             User getUser = getUserById.get();
-            if (getProductById.isPresent()) {
-                Product getProduct = getProductById.get();
-                cartRepository.save(
-                        new Cart(
-                                getProduct,
-                                getUser,
-                                cartDTO.getQuantity(),
-                                cartDTO.getPrice(),
-                                cartDTO.getAddedDate()
-                        )
-                );
+
+            List<Cart> carts = new ArrayList<>();
+            List<Integer> productExists = new ArrayList<>();
+
+            for (CartDTO i : cartDTO) {
+                Optional<Cart> cartExistsInRepo = cartRepository.findByUserIdAndProductId(userId, i.getProductId());
+                Optional<Product> getProductById = productRepository.findById(i.getProductId());
+                if (getProductById.isPresent()) {
+                    Product getProduct = getProductById.get();
+                    carts.add(new Cart(getProduct,
+                            getUser,
+                            i.getQuantity(),
+                            i.getPrice(),
+                            i.getAddedDate())
+                    );
+                } else {
+                    productExists.add(i.getProductId());
+                }
+            }
+            //Wrong product Id will lead to failure in saving product
+            if (!productExists.isEmpty()) {
+                return "Invalid product ID: " + productExists;
+            } else {
+                for (Cart saveCart : carts) {
+                    cartRepository.save(saveCart);
+                }
                 return "Cart added successfully";
             }
-            return "Product Doesn't Exists!";
         }
         return "User Doesn't Exists!";
     }
@@ -61,23 +68,47 @@ public class CartService {
         if (cartList.isEmpty()) {
             throw new IllegalStateException("User haven't added anything in the cart");
         }
-        for (Cart i : cartList){
-            System.out.println(i.getId());
-        }
         for (Cart i : cartList) {
             returnDTOList.add(new CartReturnDTO(
                     i.getUser().getId(),
                     i.getQuantity(),
                     i.getPrice(),
                     i.getAddedDate(),
-                    /*i.getProduct(),*/
                     i.getProduct().getImage().getImagePath())
             );
         }
-
-        /*for (CartReturnDTO i : returnDTOList) {
-            i.getProduct().setImage(i.decodeImage(i.getProduct().getImage()));
-        }*/
         return  returnDTOList;
+    }
+
+    public Object updateCart(List<CartDTO> cartDTO, Long userId) throws Exception {
+        List<Cart> cartList = cartRepository.findAllByUserId(userId);
+        if (cartList.isEmpty()) {
+            throw new Exception("User haven't added anything in the cart");
+        }
+
+        for (CartDTO i : cartDTO) {
+            for (Cart k : cartList) {
+                if (!i.getProductId().equals(k.getProduct().getId())) {
+                    continue;
+                } else {
+                    k.setPrice(i.getPrice());
+                    k.setQuantity(i.getQuantity());
+                }
+            }
+        }
+        for (Cart updateCart : cartList) {
+            cartRepository.save(updateCart);
+        }
+        return "Successfully Updated!";
+    }
+
+    public Object deleteCart(Integer productId, Long userId) {
+        Optional<Cart> cart = cartRepository.findByUserIdAndProductId(userId, productId);
+        if (cart.isPresent()) {
+            Cart deleteCart = cart.get();
+            cartRepository.delete(deleteCart);
+            return deleteCart.getProduct().getProductName() + " Successfully removed from Cart";
+        }
+        return "Delete Operation Failed!";
     }
 }
