@@ -5,11 +5,10 @@ import HomeDecor.cart.cartDTO.CartDTO;
 import HomeDecor.cart.cartDTO.CartReturnDTO;
 import HomeDecor.cart.repository.CartRepository;
 import HomeDecor.product.Product;
-import HomeDecor.product.ProductRepository;
+import HomeDecor.product.repository.ProductRepository;
 import HomeDecor.user.User;
 import HomeDecor.user.UserInterface;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

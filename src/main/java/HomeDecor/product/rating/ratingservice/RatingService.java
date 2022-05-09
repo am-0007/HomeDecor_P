@@ -1,12 +1,11 @@
 package HomeDecor.product.rating.ratingservice;
 
 import HomeDecor.product.Product;
-import HomeDecor.product.ProductRepository;
+import HomeDecor.product.repository.ProductRepository;
 import HomeDecor.product.rating.RatingProduct;
 import HomeDecor.product.rating.ratingproductdto.RatingProductDTO;
 import HomeDecor.product.rating.ratingrepository.RatingRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

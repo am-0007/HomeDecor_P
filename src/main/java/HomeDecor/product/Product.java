@@ -1,6 +1,7 @@
 package HomeDecor.product;
 
 import HomeDecor.product.image.Image;
+import HomeDecor.product.productStatus.Status;
 import HomeDecor.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,18 +37,23 @@ public class Product {
     @ManyToOne
     private Image image;
 
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
     public Product(String productName,
                    String productDescription,
                    ProductCategory productCategory,
-                   long price,
+                   Long price,
                    User user,
-                   Image image) {
+                   Image image,
+                   Status status) {
         this.productName = productName;
         this.productDescription = productDescription;
         this.productCategory = productCategory;
         this.price = price;
         this.user = user;
         this.image = image;
+        this.status = status;
     }
 
 }

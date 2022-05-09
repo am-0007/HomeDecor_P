@@ -1,7 +1,7 @@
 package HomeDecor.product.recommendation.service;
 
 import HomeDecor.product.Product;
-import HomeDecor.product.ProductRepository;
+import HomeDecor.product.repository.ProductRepository;
 import HomeDecor.product.dto.ProductResponse;
 import HomeDecor.product.rating.RatingProduct;
 import HomeDecor.product.rating.ratingrepository.RatingRepository;

@@ -26,8 +26,6 @@ public class JWTTokenHelper {
 
     private final SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS256;
 
-
-
     private Claims getAllClaimsFromToken(String token) {
         Claims claims;
         try {
@@ -60,7 +58,7 @@ public class JWTTokenHelper {
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(generateExpirationDate())
-                .signWith( SIGNATURE_ALGORITHM, secretKey )
+                .signWith(SIGNATURE_ALGORITHM, secretKey )
                 .compact();
     }
 
@@ -106,17 +104,17 @@ public class JWTTokenHelper {
         return issueAt;
     }
 
-    public String getToken( HttpServletRequest request ) {
+    public String getToken(HttpServletRequest request) {
 
-        String authHeader = getAuthHeaderFromHeader( request );
-        if ( authHeader != null && authHeader.startsWith("Bearer ")) {
-            return authHeader.substring(7);
+        String authHeader = getAuthHeaderFromHeader(request);
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            return authHeader.substring("Bearer ".length());
         }
 
         return null;
     }
 
-    public String getAuthHeaderFromHeader( HttpServletRequest request ) {
+    public String getAuthHeaderFromHeader(HttpServletRequest request ) {
         return request.getHeader("Authorization");
     }
 

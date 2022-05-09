@@ -30,7 +30,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JWTTokenHelper jwtTokenHelper;
     @Autowired
     public SecurityConfig(PasswordEncoder passwordEncoder,
-                          UserService userService, AuthenticationEntryPoint authenticationEntryPoint, JWTTokenHelper jwtTokenHelper) {
+                          UserService userService,
+                          AuthenticationEntryPoint authenticationEntryPoint,
+                          JWTTokenHelper jwtTokenHelper) {
         this.passwordEncoder = passwordEncoder;
         this.userService = userService;
         this.authenticationEntryPoint = authenticationEntryPoint;
@@ -55,11 +57,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                                 "/api/v*/adminRegistration/**",
                                 "/api/v1/auth/login",
                                 "/api/v1/auth/adminLogin",
+                                "/api/v1/auth/superAdminLogin",
                                 "/api/v1/auth/userinfo",
                                 "/api/v1/login/**", "/api/v*/confirm/**",
                                 "/api/product/getProduct",
                                 "/api/product/getProductByName/**",
-                                "/api/product/getProductById/**").permitAll()
+                                "/api/product/getProductById/**",
+                                "/api/v*/superAdminRegistration/**").permitAll()
                         .anyRequest()
                         .authenticated()
                 )

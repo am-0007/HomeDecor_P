@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,9 +17,9 @@ import java.util.List;
 @RequestMapping("/api/recommendProduct")
 public class RecommendationController {
 
-    @Autowired
     private final RecommendService recommendService;
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping(value = "/userBased/{userId}")
     public ResponseEntity<List<Product>> listAllItemUserBased(@PathVariable("userId") long userId) {
         List<Product> recommendProduct = recommendService.recommendAllItemUserBased(userId);
@@ -28,7 +29,7 @@ public class RecommendationController {
         return new ResponseEntity<List<Product>>(recommendProduct, HttpStatus.OK);
     }
 
-
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping(value = "/itemBased/{id}")
     public ResponseEntity<List<Product>> ListAllItemsItemBased(@PathVariable("id") Integer userId) {
         List<Product> recommendProduct = recommendService.recommendAllItemsItemBased(userId);

@@ -6,7 +6,6 @@ import HomeDecor.login.LoginResponse;
 import HomeDecor.login.LoginService;
 import HomeDecor.login.UserInfo;
 import HomeDecor.user.User;
-import HomeDecor.user.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,10 +48,17 @@ public class RegistrationController {
         return new ResponseEntity<>(registrationService.register(request), HttpStatus.OK);
     }
 
-    //AdminUser
+    //seller as AdminUser
     @PostMapping("/adminRegistration")
     public ResponseEntity<?> adminRegister(@RequestBody RegistrationDTO request) {
         request.setUserRole(ADMIN);
+        return new ResponseEntity<>(registrationService.register(request), HttpStatus.OK);
+    }
+
+    //SuperAdmin
+    @PostMapping("/superAdminRegistration")
+    public ResponseEntity<?> superAdminRegister(@RequestBody RegistrationDTO request) {
+        request.setUserRole(SUPERADMIN);
         return new ResponseEntity<>(registrationService.register(request), HttpStatus.OK);
     }
 
@@ -100,6 +106,27 @@ public class RegistrationController {
 
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.setToken(jwtToken);
+        loginResponse.setUsername(user.getUsername());
+        loginResponse.setId(user.getId());
+
+        return ResponseEntity.status(HttpStatus.OK).body(loginResponse);
+    }
+
+    //SuperAdmin
+    @SneakyThrows
+    @PostMapping("/auth/superAdminLogin")
+    public ResponseEntity<?> superAdminLogin(@RequestBody LoginRequest loginRequest) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginRequest.getUsername(),
+                        loginRequest.getPassword()
+                )
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        User user = (User) authentication.getPrincipal();
+
+        LoginResponse loginResponse = new LoginResponse();
+        loginResponse.setToken(jwtTokenHelper.generateToken(user.getUsername()));
         loginResponse.setUsername(user.getUsername());
         loginResponse.setId(user.getId());
 

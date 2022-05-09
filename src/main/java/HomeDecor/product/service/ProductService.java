@@ -1,17 +1,17 @@
 package HomeDecor.product.service;
 
 import HomeDecor.product.Product;
-import HomeDecor.product.ProductRepository;
+import HomeDecor.product.productStatus.Status;
+import HomeDecor.product.repository.ProductRepository;
 import HomeDecor.product.dto.ProductDTO;
 import HomeDecor.product.dto.ProductResponse;
 import HomeDecor.product.image.Image;
-import HomeDecor.product.image.ImageRepository;
 import HomeDecor.product.image.service.ImageService;
 import HomeDecor.user.User;
 import HomeDecor.user.UserInterface;
-import HomeDecor.user.UserService;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
+import org.apache.hadoop.fs.Stat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import static HomeDecor.product.productStatus.Status.*;
 
 @Service
 @AllArgsConstructor
@@ -35,6 +36,7 @@ public class ProductService {
     private final Product product;
 
 
+
     @SneakyThrows
     public String addProduct(MultipartFile multipartFile,
                              @RequestBody ProductDTO productDTO) {
@@ -45,7 +47,7 @@ public class ProductService {
         User getUser = user.get();
         Image image = imageService.saveImage(multipartFile, getUser);
 
-        List<Product> productNameExists = productRepository.findAllByProductName(product.getProductName());
+        List<Product> productNameExists = productRepository.findAllByProductName(productDTO.getProductName(), APPROVED);
 
         for (Product i : productNameExists) {
             if (i.getUser().getUsername().equals(product.getUser().getUsername())) {
@@ -58,7 +60,8 @@ public class ProductService {
                 productDTO.getProductCategory(),
                 productDTO.getPrice(),
                 getUser,
-                image
+                image,
+                PENDING
         );
         productRepository.save(product);
         return product.getProductName() + " Successfully Added";
@@ -68,14 +71,15 @@ public class ProductService {
     @SneakyThrows
     public String updateProductDetail(MultipartFile multipartFile,
                                       ProductDTO productDTO,
-                                      Integer productId) {
+                                      Integer productId,
+                                      Status status) {
         Optional<User> user = userInterface.findById(productDTO.getUserId());
         if (user.isEmpty()) {
             return "User Don't Exists!";
         }
 
         User getUser = user.get();
-        Product productExist = productRepository.findById(productId)
+        Product productExist = productRepository.findById(productId, status)
                 .orElseThrow(
                         () -> new IllegalStateException("Sorry, Not Avail!")
                 );
@@ -101,25 +105,12 @@ public class ProductService {
 
     }
 
-    public List<ProductResponse> getProduct() {
-        List<Product> getProduct = productRepository.findAll();
-        List<ProductResponse> productResponse = new ArrayList<>();
-        for (Product i : getProduct) {
-            productResponse.add(new ProductResponse(
-                    i.getId(),
-                    i.getProductName(),
-                    i.getProductDescription(),
-                    i.getProductCategory(),
-                    i.getPrice(),
-                    i.getUser().getId(),
-                    i.getImage().getImagePath()
-            ));
-        }
-        return productResponse;
-    }
-
     public List<ProductResponse> findByProductName(String productName) {
-        List<Product> getProductListByProductName = productRepository.findAllByProductName(productName);
+        List<Product> getProductListByProductName = productRepository.findAllByProductName(productName, APPROVED);
+        /*
+        Pageable pageable = PageRequest.of(0, 10);
+        List<Product> getProductListByProductName = (List<Product>) productRepository.findAllByProductName(pageable);
+        */
         List<ProductResponse> productResponse = new ArrayList<>();
         for (Product i : getProductListByProductName) {
             productResponse.add(new ProductResponse(
@@ -163,4 +154,58 @@ public class ProductService {
         );
         return productResponse;
     }
+
+    public Object approveProduct(Integer productId, Status status) {
+        Optional<Product> product = productRepository.findById(productId, status);
+        if (product.isEmpty()) {
+            return "Product: " + productId + " does not exists!";
+        }
+        productRepository.approveStatus(productId);
+        return "product: " + productId + " verified";
+    }
+
+    public Object rejectProduct(Integer productId) {
+        Optional<Product> product = productRepository.findById(productId);
+        if (product.isEmpty()) {
+            return "Product: " + productId + " does not exists!";
+        }
+        productRepository.rejectStatus(productId);
+        return "product: " + productId + "could not be verified" +
+                "Please, Enter correct Details";
+    }
+
+    public List<ProductResponse> getProductByStatus(Long userId, Status status) {
+        Optional<List<Product>> getProductListByStatus = productRepository.findAllByStatus(userId, status);
+        List<ProductResponse> productResponse = new ArrayList<>();
+        for (Product i : getProductListByStatus.get()) {
+            productResponse.add(new ProductResponse(
+                    i.getId(),
+                    i.getProductName(),
+                    i.getProductDescription(),
+                    i.getProductCategory(),
+                    i.getPrice(),
+                    i.getUser().getId(),
+                    i.getImage().getImagePath()
+            ));
+        }
+        return productResponse;
+    }
+
+    public List<ProductResponse> getProductByStatus(Status status) {
+        Optional<List<Product>> getProductListByStatus = productRepository.findAllByStatus(status);
+        List<ProductResponse> productResponse = new ArrayList<>();
+        for (Product i : getProductListByStatus.get()) {
+            productResponse.add(new ProductResponse(
+                    i.getId(),
+                    i.getProductName(),
+                    i.getProductDescription(),
+                    i.getProductCategory(),
+                    i.getPrice(),
+                    i.getUser().getId(),
+                    i.getImage().getImagePath()
+            ));
+        }
+        return productResponse;
+    }
+
 }
