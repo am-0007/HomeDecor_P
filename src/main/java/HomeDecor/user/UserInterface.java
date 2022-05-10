@@ -6,7 +6,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import static HomeDecor.user.UserRole.*;
 
 @Repository
 @Transactional(readOnly = true)
@@ -20,4 +22,13 @@ public interface UserInterface extends JpaRepository<User, Long> {
     @Query("UPDATE tb_user u " +
             "SET u.enabled = TRUE WHERE u.username = ?1 OR u.email = ?1")
     int enableUser(String username);
+
+    @Query("select u from tb_user u where " +
+            "u.userRole = ?1")
+    List<User> findAllByUserRole(UserRole userRole);
+
+    @Query("select COUNT(u) from tb_user u where " +
+            "u.userRole = HomeDecor.user.UserRole.ADMIN OR " +
+            "u.userRole = HomeDecor.user.UserRole.USER")
+    Long countUser();
 }

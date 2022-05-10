@@ -3,17 +3,23 @@ package HomeDecor.user;
 import HomeDecor.login.LoginRequest;
 import HomeDecor.registration.emailConfirmation.ConfirmationTokenService;
 import HomeDecor.registration.emailConfirmation.EmailConfirmation;
+import HomeDecor.user.dto.UserDTO;
+import org.apache.hadoop.yarn.webapp.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
+import static HomeDecor.user.UserRole.*;
 @Service
 public class UserService implements UserDetailsService {
 
@@ -82,7 +88,64 @@ public class UserService implements UserDetailsService {
     }
 
 
+    //SuperAdmin
+    public Object removeUser(Long userId) {
+        Optional<User> userExists = userInterface.findById(userId);
+        if (userExists.isEmpty()) {
+            throw new NotFoundException("userId: " + userId + ", you are seaching is not available");
+        } else {
+            User user = userExists.get();
+            userInterface.delete(user);
+            return HttpStatus.OK;
+        }
+    }
 
+    //getAllUser
+    public List<UserDTO> getAllUser() {
+        List<User> users = userInterface.findAll();
+        List<UserDTO> userResponse = new ArrayList<>();
+        for (User u : users) {
+            if (u.getUserRole() != SUPERADMIN) {
+                userResponse.add(new UserDTO(
+                        u.getId(),
+                        u.getFirstName(),
+                        u.getLastName(),
+                        u.getEmail(),
+                        u.getDateOfBirth(),
+                        u.getPhoneNumber(),
+                        u.getUsername(),
+                        u.getEnabled(),
+                        !u.getLocked(),
+                        u.getGender().toString(),
+                        u.getUserRole().toString()
+                ));
+            }
+        }
+        return userResponse;
+    }
 
+    public List<UserDTO> getUserByRole(UserRole userRole) {
+        List<User> users = userInterface.findAllByUserRole(userRole);
+        List<UserDTO> userResponse = new ArrayList<>();
+        for (User u : users) {
+            userResponse.add(new UserDTO(
+                    u.getId(),
+                    u.getFirstName(),
+                    u.getLastName(),
+                    u.getEmail(),
+                    u.getDateOfBirth(),
+                    u.getPhoneNumber(),
+                    u.getUsername(),
+                    u.getEnabled(),
+                    !u.getLocked(),
+                    u.getGender().toString(),
+                    u.getUserRole().toString()
+            ));
+        }
+        return userResponse;
+    }
 
+    public Object getTotalUser() {
+        return userInterface.countUser();
+    }
 }

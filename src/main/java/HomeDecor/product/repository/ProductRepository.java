@@ -1,6 +1,7 @@
 package HomeDecor.product.repository;
 
 import HomeDecor.product.Product;
+import HomeDecor.product.ProductCategory;
 import HomeDecor.product.productStatus.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -43,7 +44,7 @@ public interface ProductRepository extends JpaRepository<Product, String> {
     int approveStatus(Integer productId);
 
     @Query("UPDATE tb_product p" +
-            " SET p.status = HomeDecor.product.productStatus.Status.APPROVED" +
+            " SET p.status = HomeDecor.product.productStatus.Status.REJECTED" +
             " Where p.id = ?1")
     @Modifying
     int rejectStatus(Integer productId);
@@ -52,7 +53,22 @@ public interface ProductRepository extends JpaRepository<Product, String> {
             "p.status = ?2 and p.user.id = ?1")
     Optional<List<Product>> findAllByStatus(Long userId, Status approved);
 
+    @Query("select p from tb_product p where" +
+            " p.status = ?1")
     Optional<List<Product>> findAllByStatus(Status approved);
+
+    @Query("select count (p) from tb_product p")
+    Long countAll();
+
+
+    @Query("select p from tb_product p where " +
+            "p.productCategory = ?1 AND " +
+            "p.status = HomeDecor.product.productStatus.Status.APPROVED")
+    Optional<List<Product>> findAllByCategory(ProductCategory category);
+
+    @Query("select count (p) from tb_product p where " +
+            "p.user.id = ?1")
+    Long countProductByUserId(Long userId);
 
 
 //    void delete(String productName);

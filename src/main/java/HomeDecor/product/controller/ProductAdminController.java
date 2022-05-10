@@ -90,4 +90,12 @@ public class ProductAdminController {
         return  new ResponseEntity<String>(productService.deleteProduct(productId), HttpStatus.OK);
     }
 
+    //returnTotal number of product added by user
+    @PreAuthorize("hasAuthority('admin:countProduct')")
+    @GetMapping("/admin/countTotalProduct/{userId}")
+    public ResponseEntity<?> countProduct(@PathVariable("userId") Long userId) {
+        return  new ResponseEntity<>(productService.countProductByUserId(userId), HttpStatus.OK);
+    }
+
+
 }

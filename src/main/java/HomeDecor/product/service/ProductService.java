@@ -1,6 +1,7 @@
 package HomeDecor.product.service;
 
 import HomeDecor.product.Product;
+import HomeDecor.product.ProductCategory;
 import HomeDecor.product.productStatus.Status;
 import HomeDecor.product.repository.ProductRepository;
 import HomeDecor.product.dto.ProductDTO;
@@ -174,6 +175,23 @@ public class ProductService {
                 "Please, Enter correct Details";
     }
 
+    public List<ProductResponse> getProductByCategory(ProductCategory category) {
+        Optional<List<Product>> getProductListByStatus = productRepository.findAllByCategory(category);
+        List<ProductResponse> productResponse = new ArrayList<>();
+        for (Product i : getProductListByStatus.get()) {
+            productResponse.add(new ProductResponse(
+                    i.getId(),
+                    i.getProductName(),
+                    i.getProductDescription(),
+                    i.getProductCategory(),
+                    i.getPrice(),
+                    i.getUser().getId(),
+                    i.getImage().getImagePath()
+            ));
+        }
+        return productResponse;
+    }
+
     public List<ProductResponse> getProductByStatus(Long userId, Status status) {
         Optional<List<Product>> getProductListByStatus = productRepository.findAllByStatus(userId, status);
         List<ProductResponse> productResponse = new ArrayList<>();
@@ -208,4 +226,13 @@ public class ProductService {
         return productResponse;
     }
 
+    //only for superAdmin
+    public Object countAllProduct() {
+        return productRepository.countAll();
+    }
+
+    //to count total product for specific user(admin)
+    public Object countProductByUserId(Long userId) {
+        return productRepository.countProductByUserId(userId);
+    }
 }

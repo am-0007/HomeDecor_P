@@ -6,13 +6,16 @@ public enum UserPermission {
     USER_READCART("user:readCart"),
     USER_SAVECART("user:saveCart"),
     ADMIN_GETPRODUCT("admin:getProduct"),
+    ADMIN_COUNTPRODUCT("admin:countProduct"),
     ADMIN_ADDPRODUCT("admin:addProduct"),
     ADMIN_EDITPRODUCT("admin:editProduct"),
     ADMIN_REMOVEPRODUCT("admin:removeProduct"),
-    SUPERADMIN_REMOVEUSER("superAdmin:removeUser"),
-    SUPERADMIN_BANUSER("superAdmin:banUser"),
+    ADMIN_GETTOTALPRODUCT("admin:getTotalProduct"),
     SUPERADMIN_EDITSTATUS("superAdmin:editStatus"),
-    SUPERADMIN_GETPRODUCTBYSTATUS("superAdmin:getProduct")
+    SUPERADMIN_GETPRODUCTBYSTATUS("superAdmin:getProduct"),
+    SUPERADMIN_GETUSER("superAdmin:getUser"),
+    SUPERADMIN_REMOVEUSER("superAdmin:removeUser"),
+    SUPERADMIN_BANUSER("superAdmin:banUser")
     ;
 
 

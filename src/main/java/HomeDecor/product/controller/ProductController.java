@@ -34,6 +34,12 @@ public class ProductController {
         return new ResponseEntity<List<ProductResponse>>(productService.getProductByStatus(Status.APPROVED), HttpStatus.OK);
     }
 
+    //get product by category
+    @GetMapping("/getProductByCategory/{category}")
+    public ResponseEntity<List<ProductResponse>> getProductByCategory(@PathVariable("category") ProductCategory category) {
+        return new ResponseEntity<>(productService.getProductByCategory(category), HttpStatus.OK);
+    }
+
     //Search BY product Name
     @GetMapping("/getProductByName/{productId}")
     public ResponseEntity<List<ProductResponse>> findByProductName(@PathVariable("productId") String productId) {

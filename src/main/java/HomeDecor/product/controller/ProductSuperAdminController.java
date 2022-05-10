@@ -1,16 +1,14 @@
 package HomeDecor.product.controller;
 
 
-import HomeDecor.product.dto.ProductDTO;
 import HomeDecor.product.productStatus.Status;
 import HomeDecor.product.service.ProductService;
+import HomeDecor.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import javax.ws.rs.PathParam;
 
 import static HomeDecor.product.productStatus.Status.*;
 
@@ -20,10 +18,12 @@ import static HomeDecor.product.productStatus.Status.*;
 public class ProductSuperAdminController {
 
     private final ProductService productService;
+    private final UserService userService;
 
     @Autowired
-    public ProductSuperAdminController(ProductService productService) {
+    public ProductSuperAdminController(ProductService productService, UserService userService) {
         this.productService = productService;
+        this.userService = userService;
     }
 
     @PreAuthorize("hasAnyAuthority('superAdmin:getProduct')")
@@ -57,6 +57,13 @@ public class ProductSuperAdminController {
     @PutMapping("/rejectProduct/{productId}")
     public ResponseEntity<?> rejectProduct(@PathVariable("productId") Integer productId) {
         return new ResponseEntity<>(productService.rejectProduct(productId), HttpStatus.OK);
+    }
+
+    //returnTotal number of product
+    @PreAuthorize("hasAnyRole('ROLE_SUPERADMIN')")
+    @GetMapping("/countProduct")
+    public ResponseEntity<?> countProduct() {
+        return new ResponseEntity<>(productService.countAllProduct(), HttpStatus.OK);
     }
 
 }
