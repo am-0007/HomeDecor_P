@@ -2,7 +2,7 @@ package HomeDecor.security;
 
 import HomeDecor.login.JWT.JWTAuthenticationFilter;
 import HomeDecor.login.JWT.token.JWTTokenHelper;
-import HomeDecor.user.UserService;
+import HomeDecor.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +17,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import static HomeDecor.user.UserRole.*;
 
 @Configuration
 @EnableWebSecurity

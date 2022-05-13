@@ -1,5 +1,6 @@
-package HomeDecor.product.image;
+package HomeDecor.product.image.imageRepo;
 
+import HomeDecor.product.image.Image;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;

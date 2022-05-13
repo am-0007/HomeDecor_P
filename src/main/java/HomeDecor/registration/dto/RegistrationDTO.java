@@ -1,6 +1,6 @@
-package HomeDecor.registration;
+package HomeDecor.registration.dto;
 
-import HomeDecor.user.Gender;
+import HomeDecor.user.ENUM.Gender;
 import HomeDecor.user.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

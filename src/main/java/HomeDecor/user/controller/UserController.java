@@ -1,9 +1,8 @@
 package HomeDecor.user.controller;
 
 
-import HomeDecor.user.User;
 import HomeDecor.user.UserRole;
-import HomeDecor.user.UserService;
+import HomeDecor.user.service.UserService;
 import HomeDecor.user.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,10 +10,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/superAdmin")
+@RequestMapping("/api/user")
 public class UserController {
 
     private final UserService userService;
@@ -24,11 +24,19 @@ public class UserController {
         this.userService = userService;
     }
 
+    //SUPER_ADMIN
     //getAllUser
     @PreAuthorize("hasAnyRole('ROLE_SUPERADMIN')")
     @GetMapping("/getAllUser")
     public ResponseEntity<List<UserDTO>> getAllUser() {
         return new ResponseEntity<>(userService.getAllUser(), HttpStatus.OK);
+    }
+
+    //get user using pagination
+    @PreAuthorize("hasAnyRole('ROLE_SUPERADMIN')")
+    @GetMapping("/getUserByPagination/{offset}/{pageSize}")
+    public ResponseEntity<?> getUserUsingPagination(@PathVariable("offset") Integer offset, @PathVariable("pageSize") Integer pageSize) {
+        return new ResponseEntity<>(userService.getUserUsingPagination(offset, pageSize), HttpStatus.OK);
     }
 
     //getUserByRole
@@ -52,6 +60,24 @@ public class UserController {
         return new ResponseEntity<>(userService.removeUser(userId), HttpStatus.OK);
     }
 
+    //forgetPassword
+    @PostMapping("/forgetPassword/{userId}")
+    public ResponseEntity<?> forgetPassword(@PathVariable("userId") Long userId) {
+        return new ResponseEntity<>(userService.forgetPassword(userId), HttpStatus.OK);
+    }
 
-
+    //changePassword
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERADMIN', 'ROLE_USER')")
+    @PutMapping("/changePassword")
+    public ResponseEntity<?> changePassword(@RequestParam("oldPassword")String oldPassword,
+                                            @RequestParam("newPassword") String newPassword,
+                                            Principal principal) {
+        try {
+            return new ResponseEntity<>(userService.changePassword(oldPassword, newPassword, principal), HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Your old password is invalid!");
+        }
+    }
 }
+
+

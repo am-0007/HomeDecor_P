@@ -1,10 +1,13 @@
-package HomeDecor.registration;
+package HomeDecor.registration.service;
 
+import HomeDecor.registration.validator.EmailValidator;
+import HomeDecor.registration.dto.RegistrationDTO;
+import HomeDecor.registration.validator.UsernameValidator;
 import HomeDecor.registration.emailConfirmation.ConfirmationTokenService;
 import HomeDecor.registration.emailConfirmation.EmailConfirmation;
 import HomeDecor.registration.emailConfirmation.email.EmailSender;
 import HomeDecor.user.User;
-import HomeDecor.user.UserService;
+import HomeDecor.user.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

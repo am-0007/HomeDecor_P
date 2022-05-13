@@ -1,12 +1,8 @@
 package HomeDecor.user.dto;
 
-import HomeDecor.user.Gender;
-import HomeDecor.user.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import java.util.Date;
 
 @Data

@@ -1,4 +1,4 @@
-package HomeDecor.user;
+package HomeDecor.user.ENUM;
 
 public enum Gender {
     MALE,

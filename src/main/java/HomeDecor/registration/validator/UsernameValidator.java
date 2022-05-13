@@ -1,4 +1,4 @@
-package HomeDecor.registration;
+package HomeDecor.registration.validator;
 
 import org.springframework.stereotype.Service;
 

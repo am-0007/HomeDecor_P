@@ -3,7 +3,7 @@ package HomeDecor.product.controller;
 
 import HomeDecor.product.productStatus.Status;
 import HomeDecor.product.service.ProductService;
-import HomeDecor.user.UserService;
+import HomeDecor.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

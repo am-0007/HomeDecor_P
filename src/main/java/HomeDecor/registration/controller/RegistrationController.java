@@ -1,10 +1,12 @@
-package HomeDecor.registration;
+package HomeDecor.registration.controller;
 
 import HomeDecor.login.JWT.token.JWTTokenHelper;
 import HomeDecor.login.LoginRequest;
 import HomeDecor.login.LoginResponse;
 import HomeDecor.login.LoginService;
 import HomeDecor.login.UserInfo;
+import HomeDecor.registration.dto.RegistrationDTO;
+import HomeDecor.registration.service.RegistrationService;
 import HomeDecor.user.User;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;

@@ -1,4 +1,4 @@
-package HomeDecor.product.image;
+package HomeDecor.product.image.response;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

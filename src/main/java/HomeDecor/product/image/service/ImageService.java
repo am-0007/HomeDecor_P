@@ -1,9 +1,8 @@
 package HomeDecor.product.image.service;
 
 import HomeDecor.product.image.Image;
-import HomeDecor.product.image.ImageRepository;
+import HomeDecor.product.image.imageRepo.ImageRepository;
 import HomeDecor.user.User;
-import HomeDecor.user.UserInterface;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,19 +1,25 @@
-package HomeDecor.user;
+package HomeDecor.user.service;
 
 import HomeDecor.login.LoginRequest;
 import HomeDecor.registration.emailConfirmation.ConfirmationTokenService;
 import HomeDecor.registration.emailConfirmation.EmailConfirmation;
+import HomeDecor.user.User;
+import HomeDecor.user.UserRole;
 import HomeDecor.user.dto.UserDTO;
+import HomeDecor.user.repository.UserInterface;
 import org.apache.hadoop.yarn.webapp.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -147,5 +153,47 @@ public class UserService implements UserDetailsService {
 
     public Object getTotalUser() {
         return userInterface.countUser();
+    }
+
+    public List<UserDTO> getUserUsingPagination(Integer offset, Integer pageSize) {
+        Page<User> fetchUser = userInterface.findAll(PageRequest.of(offset, pageSize).withSort(Sort.by("id")));
+        List<UserDTO> fetchUsers = new ArrayList<>();
+        for (User u : fetchUser) {
+            fetchUsers.add(new UserDTO(
+                    u.getId(),
+                    u.getFirstName(),
+                    u.getLastName(),
+                    u.getEmail(),
+                    u.getDateOfBirth(),
+                    u.getPhoneNumber(),
+                    u.getUsername(),
+                    u.getEnabled(),
+                    !u.getLocked(),
+                    u.getGender().toString(),
+                    u.getUserRole().toString()
+            ));
+        }
+        return fetchUsers;
+    }
+
+    public Object forgetPassword(Long userId) {
+        return null;
+    }
+
+    public Object changePassword(String oldPassword,
+                                 String newPassword,
+                                 Principal principal) throws Exception{
+
+        String username = principal.getName();
+        Optional<User> userExists = userInterface.findByUsername(username);
+        if (userExists.isPresent()) {
+            User user = userExists.get();
+            if (passwordEncoder.matches(oldPassword, user.getPassword())) {
+                user.setPassword(passwordEncoder.encode(newPassword));
+                userInterface.save(user);
+                return "Your password is changed...";
+            }
+        }
+        return new Exception("Sorry, Your previous password doesn't match...");
     }
 }

@@ -1,6 +1,6 @@
 package HomeDecor.login;
 
-import HomeDecor.user.UserService;
+import HomeDecor.user.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

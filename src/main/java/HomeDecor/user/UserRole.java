@@ -1,12 +1,13 @@
 package HomeDecor.user;
 
+import HomeDecor.user.ENUM.UserPermission;
 import com.google.common.collect.Sets;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static HomeDecor.user.UserPermission.*;
+import static HomeDecor.user.ENUM.UserPermission.*;
 public enum UserRole {
     USER(Sets.newHashSet(USER_SAVECART, USER_GETPRODUCT, USER_RATEPRODUCT, USER_READCART)),
     ADMIN(Sets.newHashSet(ADMIN_ADDPRODUCT, ADMIN_EDITPRODUCT, ADMIN_REMOVEPRODUCT, ADMIN_GETPRODUCT)),

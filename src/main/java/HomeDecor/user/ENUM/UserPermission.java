@@ -1,4 +1,4 @@
-package HomeDecor.user;
+package HomeDecor.user.ENUM;
 
 public enum UserPermission {
     USER_GETPRODUCT("user:getProduct"),
