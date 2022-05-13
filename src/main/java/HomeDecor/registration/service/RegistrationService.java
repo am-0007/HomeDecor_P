@@ -90,7 +90,7 @@ public class RegistrationService{
                 "    <tbody><tr>\n" +
                 "      <td width=\"100%\" height=\"53\" bgcolor=\"#0b0c0c\">\n" +
                 "        \n" +
-                "        <table role=\"presentation\" width=\"100%\" style=\"border-collapse:collapse;max-width:580px\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" align=\"center\">\n" +
+                "        <table role=\"prewhat is mime message in javasentation\" width=\"100%\" style=\"border-collapse:collapse;max-width:580px\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" align=\"center\">\n" +
                 "          <tbody><tr>\n" +
                 "            <td width=\"70\" bgcolor=\"#0b0c0c\" valign=\"middle\">\n" +
                 "                <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse\">\n" +

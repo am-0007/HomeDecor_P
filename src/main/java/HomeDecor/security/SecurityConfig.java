@@ -62,7 +62,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                                 "/api/product/getProduct",
                                 "/api/product/getProductByName/**",
                                 "/api/product/getProductById/**",
-                                "/api/v*/superAdminRegistration/**").permitAll()
+                                "/api/v*/superAdminRegistration/**",
+                                "/api/user/resetPassword/**",
+                                "/api/user/forgetPassword").permitAll()
                         .anyRequest()
                         .authenticated()
                 )

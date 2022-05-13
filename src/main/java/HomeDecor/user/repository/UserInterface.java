@@ -32,4 +32,7 @@ public interface UserInterface extends JpaRepository<User, Long> {
             "u.userRole = HomeDecor.user.UserRole.ADMIN OR " +
             "u.userRole = HomeDecor.user.UserRole.USER")
     Long countUser();
+
+    Optional<User> findByUsernameAndEmail(String username, String email);
+
 }

@@ -61,10 +61,27 @@ public class UserController {
     }
 
     //forgetPassword
-    @PostMapping("/forgetPassword/{userId}")
-    public ResponseEntity<?> forgetPassword(@PathVariable("userId") Long userId) {
-        return new ResponseEntity<>(userService.forgetPassword(userId), HttpStatus.OK);
+    @PostMapping("/forgetPassword")
+    public ResponseEntity<?> forgetPassword(@RequestParam("username") String username, @RequestParam("email") String email) {
+        try {
+            return new ResponseEntity<>(userService.forgetPassword(username, email), HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e);
+        }
     }
+
+    //resetPassword
+    @PutMapping("/resetPassword/{username}")
+    public ResponseEntity<?> resetPassword(@PathVariable("username") String username,
+                                           @RequestParam("token") String token,
+                                           @RequestParam("newPassword") String password) {
+        try {
+            return new ResponseEntity<>(userService.resetPassword(username,token,password), HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e);
+        }
+    }
+
 
     //changePassword
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERADMIN', 'ROLE_USER')")
